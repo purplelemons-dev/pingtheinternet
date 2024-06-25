@@ -28,7 +28,7 @@ def main():
             ):
                 continue
             for c in range(1, 256):
-                for d in range(1, 256):
+                for d in range(1, 255):
                     ip = f"{a}.{b}.{c}.{d}"
                     response = ping(ip)
                     MAIN[ip] = response
