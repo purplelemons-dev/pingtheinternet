@@ -1,0 +1,9 @@
+
+services:
+  pinger:
+    container_name: pinger
+    network_mode: host
+    volumes:
+      - ./data/:/app/data/
+    tty: true
+    build: .
