@@ -1,5 +1,6 @@
 import os
 from json import dumps
+from threading import Thread
 
 # to name the file the current date
 from datetime import datetime
@@ -10,12 +11,12 @@ def ping(ip: str):
     return response
 
 
-NOW = datetime.now().strftime('%Y-%m-%d')
+NOW = datetime.now().strftime("%Y-%m-%d")
 MAIN = {}
 
 
 def main():
-    for a in range(1, 256):
+    for a in range(1, 224):
         if a in {10, 127}:
             continue
         for b in range(1, 256):
@@ -28,14 +29,17 @@ def main():
             ):
                 continue
             for c in range(1, 256):
+                pool: list[Thread] = []
                 for d in range(1, 255):
                     ip = f"{a}.{b}.{c}.{d}"
-                    response = ping(ip)
-                    MAIN[ip] = response
+                    t = Thread(target=lambda: MAIN.update({ip: ping(ip)}))
+                    t.start()
+                    pool.append(t)
 
-                with open(
-                    f"./data/result_{NOW}.json", "w"
-                ) as f:
+                for t in pool:
+                    t.join()
+
+                with open(f"./data/result_{NOW}.json", "w") as f:
                     f.write(dumps(MAIN, indent=4))
 
 
